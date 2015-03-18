@@ -4,14 +4,14 @@
 
 #include "WebViewImpl_android.h"
 #include "WebView.h"
-#include "org_cocos2dx_lib_Cocos2dxWebViewHelper.h"
+#include "org_cocos2dx_lib_webview_Cocos2dxWebViewHelper.h"
 #include "jni/JniHelper.h"
 #include "CCGLView.h"
 #include "base/CCDirector.h"
 #include "platform/CCFileUtils.h"
 #include <unordered_map>
 
-#define CLASS_NAME "org/cocos2dx/lib/Cocos2dxWebViewHelper"
+#define CLASS_NAME "org/cocos2dx/lib/webview/Cocos2dxWebViewHelper"
 
 namespace {
 int createWebViewJNI() {
@@ -182,18 +182,52 @@ void setWebViewVisibleJNI(const int index, const bool visible) {
     }
 }
 
+void setWebViewBounceJNI(const int index, const bool bounce) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setBounce", "(IZ)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, bounce);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+void setWebViewVerticalScrollIndicatorJNI(const int index, const bool indicator) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setVerticalScrollIndicator", "(IZ)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, indicator);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+void setWebViewHorizontalScrollIndicatorJNI(const int index, const bool indicator) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setHorizontalScrollIndicator", "(IZ)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, indicator);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
 std::string getUrlStringByFileName(const std::string &fileName) {
     const std::string basePath("file:///android_asset/");
+
     std::string fullPath = cocos2d::FileUtils::getInstance()->fullPathForFilename(fileName);
     const std::string assetsPath("assets/");
 
-    std::string urlString;
-    if (fullPath.find(assetsPath) != std::string::npos) {
-        urlString = fullPath.replace(fullPath.find_first_of(assetsPath), assetsPath.length(), basePath);
-    } else {
-        urlString = fullPath;
-    }
+    const std::string dataPath("/");
+    const std::string basePathForDataPath("file://");
 
+    std::string urlString;
+    auto pos = fullPath.find(dataPath);
+    if (pos == 0) {
+        // for load from download asset
+        urlString = basePathForDataPath + fullPath;
+    } else {
+        if (fullPath.find(assetsPath) != std::string::npos) {
+            // for load from bundle asset
+            urlString = fullPath.replace(fullPath.find_first_of(assetsPath), assetsPath.length(), basePath);
+        } else {
+            urlString = fullPath;
+        }
+    }
     return urlString;
 }
 } // namespace
@@ -329,6 +363,18 @@ void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transfo
 
 void WebViewImpl::setVisible(bool visible) {
     setWebViewVisibleJNI(_viewTag, visible);
+}
+
+void WebViewImpl::setBounce(bool bounce) {
+    setWebViewBounceJNI(_viewTag, bounce);
+}
+
+void WebViewImpl::setVerticalScrollIndicator(bool indicator) {
+  setWebViewVerticalScrollIndicatorJNI(_viewTag, indicator);
+}
+
+void WebViewImpl::setHorizontalScrollIndicator(bool indicator) {
+  setWebViewHorizontalScrollIndicatorJNI(_viewTag, indicator);
 }
 } // namespace cocos2d
 } // namespace plugin

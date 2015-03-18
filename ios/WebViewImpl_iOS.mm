@@ -128,6 +128,18 @@ void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transfo
 void WebViewImpl::setVisible(bool visible) {
     [_uiWebViewWrapper setVisible:visible];
 }
+    
+void WebViewImpl::setBounce(bool bounce) {
+    [_uiWebViewWrapper setBounce:bounce];
+}
+    
+void WebViewImpl::setVerticalScrollIndicator(bool indicator) {
+    [_uiWebViewWrapper setVarticalScrollIndicator:indicator];
+}
+    
+void WebViewImpl::setHorizontalScrollIndicator(bool indicator) {
+    [_uiWebViewWrapper setHorizontalScrollIndicator:indicator];
+}
 } // namespace cocos2d
 } // namespace plugin
 

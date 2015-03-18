@@ -1,10 +1,12 @@
-package org.cocos2dx.lib;
+package org.cocos2dx.lib.webview;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import org.cocos2dx.lib.Cocos2dxActivity;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -93,6 +95,45 @@ public class Cocos2dxWebViewHelper {
                 if (webView != null) {
                     webView.setVisibility(visible ? View.VISIBLE : View.GONE);
                 }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void setBounce(final int index, final boolean bounce) {
+      cocos2dxActivity.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          Cocos2dxWebView webView = webViews.get(index);
+          if (webView != null) {
+            webView.setOverScrollMode(bounce ? View.OVER_SCROLL_ALWAYS : View.OVER_SCROLL_NEVER);
+          }
+        }
+      });
+    }
+
+    @SuppressWarnings("unused")
+    public static void setVerticalScrollIndicator(final int index, final boolean indicator) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.setVerticalScrollBarEnabled(indicator);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void setHorizontalScrollIndicator(final int index, final boolean indicator) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                  if (webView != null) {
+                      webView.setHorizontalScrollBarEnabled(indicator);
+                  }
             }
         });
     }

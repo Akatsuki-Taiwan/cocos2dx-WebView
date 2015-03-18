@@ -35,6 +35,7 @@
 }
 
 - (void)dealloc {
+    self.uiWebView.delegate = nil;
     [self.uiWebView removeFromSuperview];
     self.jsScheme = nil;
     [super dealloc];
@@ -44,6 +45,10 @@
     if (!self.uiWebView) {
         self.uiWebView = [[[UIWebView alloc] init] autorelease];
         self.uiWebView.delegate = self;
+        // 初期設定：背景色なし、自動リンクなし
+        [self.uiWebView setOpaque:NO];
+        [self.uiWebView setBackgroundColor:[UIColor clearColor]];
+        self.uiWebView.dataDetectorTypes = UIDataDetectorTypeNone;
     }
     if (!self.uiWebView.superview) {
         auto view = cocos2d::Director::getInstance()->getOpenGLView();
@@ -54,6 +59,18 @@
 
 - (void)setVisible:(bool)visible {
     self.uiWebView.hidden = !visible;
+}
+
+- (void)setBounce:(bool)bounce {
+    self.uiWebView.scrollView.bounces = bounce;
+}
+
+- (void)setVarticalScrollIndicator:(bool)indicator {
+    self.uiWebView.scrollView.showsVerticalScrollIndicator = indicator;
+}
+
+- (void)setHorizontalScrollIndicator:(bool)indicator {
+    self.uiWebView.scrollView.showsHorizontalScrollIndicator = indicator;
 }
 
 - (void)setFrameWithX:(float)x y:(float)y width:(float)width height:(float)height {

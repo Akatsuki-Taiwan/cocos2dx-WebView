@@ -14,6 +14,8 @@ class WebViewImpl;
 
 class WebView : public cocos2d::ui::Widget {
 public:
+    DECLARE_CLASS_GUI_INFO
+
     /**
     * Allocates and initializes a WebView.
     */
@@ -133,6 +135,12 @@ public:
     virtual void draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) override;
 
     virtual void setVisible(bool visible) override;
+
+    void setBounce(bool bounce);
+
+    void setVerticalScrollIndicator(bool indicator);
+
+    void setHorizontalScrollIndicator(bool indicator);
 
 private:
     cocos2d::plugin::WebViewImpl *_impl;

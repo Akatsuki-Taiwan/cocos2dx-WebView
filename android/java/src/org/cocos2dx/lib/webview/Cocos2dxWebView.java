@@ -1,4 +1,4 @@
-package org.cocos2dx.lib;
+package org.cocos2dx.lib.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -37,7 +37,7 @@ public class Cocos2dxWebView extends WebView {
         try {
             Method method = this.getClass().getMethod("removeJavascriptInterface", new Class[]{String.class});
             method.invoke(this, "searchBoxJavaBridge_");
-        } catch (ReflectiveOperationException e) {
+        } catch (Exception e) {
             Log.d(TAG, "This API level do not support `removeJavascriptInterface`");
         }
 

@@ -21,6 +21,12 @@
 
 - (void)setVisible:(bool)visible;
 
+- (void)setBounce:(bool)bounce;
+
+- (void)setVarticalScrollIndicator:(bool)indicator;
+
+- (void)setHorizontalScrollIndicator:(bool)indicator;
+
 - (void)setFrameWithX:(float)x y:(float)y width:(float)width height:(float)height;
 
 - (void)setJavascriptInterfaceScheme:(const std::string &)scheme;

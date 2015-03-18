@@ -2,7 +2,7 @@
 <project name="custom_rules" default="help">
   <target name="-post-compile">
     <javah classpath="./bin/classes" destdir="../jni/">
-      <class name="org.cocos2dx.lib.Cocos2dxWebViewHelper" />
+      <class name="org.cocos2dx.lib.webview.Cocos2dxWebViewHelper" />
     </javah>
   </target>
 </project>

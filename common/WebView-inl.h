@@ -8,6 +8,8 @@
 
 namespace cocos2d {
 namespace plugin {
+IMPLEMENT_CLASS_GUI_INFO(WebView);
+
 WebView::WebView() : _impl(new WebViewImpl(this)) {
 }
 
@@ -84,6 +86,18 @@ void WebView::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, 
 void WebView::setVisible(bool visible) {
     Node::setVisible(visible);
     _impl->setVisible(visible);
+}
+
+void WebView::setBounce(bool bounce) {
+    _impl->setBounce(bounce);
+}
+
+void WebView::setVerticalScrollIndicator(bool indicator) {
+    _impl->setVerticalScrollIndicator(indicator);
+}
+
+void WebView::setHorizontalScrollIndicator(bool indicator) {
+    _impl->setHorizontalScrollIndicator(indicator);
 }
 } // namespace cocos2d
 } // namespace plugin
