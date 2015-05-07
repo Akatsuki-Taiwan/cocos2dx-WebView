@@ -29,6 +29,8 @@ public class Cocos2dxWebViewHelper {
         Cocos2dxWebViewHelper.cocos2dxActivity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
         Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
     }
+    
+    public static Cocos2dxActivity getCocos2dxActivity() { return cocos2dxActivity; }
 
     private static native boolean shouldStartLoading(int index, String message);
 

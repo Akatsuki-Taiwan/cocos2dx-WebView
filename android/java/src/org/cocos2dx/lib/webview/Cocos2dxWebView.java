@@ -2,10 +2,13 @@ package org.cocos2dx.lib.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.graphics.Color;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -33,6 +36,8 @@ public class Cocos2dxWebView extends WebView {
 
         this.getSettings().setJavaScriptEnabled(true);
 
+		this.setBackgroundColor(Color.TRANSPARENT);
+
         // `searchBoxJavaBridge_` has big security risk. http://jvn.jp/en/jp/JVN53768697
         try {
             Method method = this.getClass().getMethod("removeJavascriptInterface", new Class[]{String.class});
@@ -58,6 +63,11 @@ public class Cocos2dxWebView extends WebView {
             URI uri = URI.create(urlString);
             if (uri != null && uri.getScheme().equals(jsScheme)) {
                 Cocos2dxWebViewHelper._onJsCallback(viewTag, urlString);
+                return true;
+            }
+            if (urlString.startsWith("mailto:")) {
+            	Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(urlString));
+            	Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
                 return true;
             }
             return Cocos2dxWebViewHelper._shouldStartLoading(viewTag, urlString);
