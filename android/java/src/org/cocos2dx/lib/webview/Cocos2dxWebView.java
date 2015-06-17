@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -98,5 +100,13 @@ public class Cocos2dxWebView extends WebView {
         layoutParams.width = width;
         layoutParams.height = height;
         this.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && !canGoBack()) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
