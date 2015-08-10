@@ -6,6 +6,7 @@
 #define __cocos2d_plugin_WebViewImpl_android_H_
 
 #include <iosfwd>
+#include <map>
 
 namespace cocos2d {
 class Data;
@@ -35,6 +36,8 @@ public:
     void loadUrl(const std::string &url);
 
     void loadFile(const std::string &fileName);
+
+    void loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header);
 
     void stopLoading();
 

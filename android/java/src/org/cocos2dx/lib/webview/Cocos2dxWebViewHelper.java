@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -29,7 +30,7 @@ public class Cocos2dxWebViewHelper {
         Cocos2dxWebViewHelper.cocos2dxActivity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
         Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
     }
-    
+
     public static Cocos2dxActivity getCocos2dxActivity() { return cocos2dxActivity; }
 
     private static native boolean shouldStartLoading(int index, String message);
@@ -216,6 +217,23 @@ public class Cocos2dxWebViewHelper {
                 }
             }
         });
+    }
+
+    @SuppressWarnings("unused")
+    public static void loadUrlWithHeader(final int index, final String url, final String[][] headers) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Cocos2dxWebView webView = webViews.get(index);
+                    if (webView != null) {
+                        HashMap<String,String> extraHeader = new HashMap<>();
+                        for (String[] header: headers) {
+                            extraHeader.put(header[0], header[1]);
+                        }
+                        webView.loadUrl(url, extraHeader);
+                    }
+                }
+            });
     }
 
     public static void stopLoading(final int index) {
