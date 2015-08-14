@@ -110,6 +110,16 @@
     [self.uiWebView loadRequest:request];
 }
 
+- (void)loadUrlWithHeader:(const std::string &)urlString header:(const std::map<std::string, std::string> &)header {
+  if (!self.uiWebView) { [self setupWebView]; }
+  NSURL *url = [NSURL URLWithString:@(urlString.c_str())];
+  NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
+  for (auto itr = header.begin(); itr != header.end(); itr++) {
+    [mutableRequest setValue:@((itr->second).c_str()) forHTTPHeaderField:@((itr->first).c_str())];
+  }
+  [self.uiWebView loadRequest:mutableRequest];
+}
+
 - (void)stopLoading {
     [self.uiWebView stopLoading];
 }

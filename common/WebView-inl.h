@@ -46,6 +46,10 @@ void WebView::loadFile(const std::string &fileName) {
     _impl->loadFile(fileName);
 }
 
+ void WebView::loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header) {
+   _impl->loadUrlWithHeader(url, header);
+ }
+
 void WebView::stopLoading() {
     _impl->stopLoading();
 }

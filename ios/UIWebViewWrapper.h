@@ -6,6 +6,7 @@
 #include <iosfwd>
 #include <functional>
 #include <string>
+#include <map>
 
 
 @interface UIWebViewWrapper : NSObject
@@ -38,6 +39,8 @@
 - (void)loadUrl:(const std::string &)urlString;
 
 - (void)loadFile:(const std::string &)filePath;
+
+- (void)loadUrlWithHeader:(const std::string &)urlString header:(const std::map<std::string, std::string> &)header;
 
 - (void)stopLoading;
 

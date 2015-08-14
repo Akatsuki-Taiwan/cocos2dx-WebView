@@ -6,6 +6,7 @@
 #define __cocos2d_plugin_WebViewImpl_IOS_H_
 
 #include <iosfwd>
+#include <map>
 
 @class UIWebViewWrapper;
 
@@ -32,6 +33,8 @@ public:
 
     void loadFile(const std::string &fileName);
 
+    void loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header);
+
     void stopLoading();
 
     void reload();
@@ -51,11 +54,11 @@ public:
     virtual void draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags);
 
     virtual void setVisible(bool visible);
-    
+
     void setBounce(bool bounce);
-    
+
     void setVerticalScrollIndicator(bool indicator);
-    
+
     void setHorizontalScrollIndicator(bool indicator);
 
 private:

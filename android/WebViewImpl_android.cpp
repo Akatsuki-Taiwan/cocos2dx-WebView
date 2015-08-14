@@ -103,6 +103,41 @@ void loadFileJNI(const int index, const std::string &filePath) {
     }
 }
 
+  void loadUrlWithHeaderJNI(const int index, const std::string &url, const std::map<std::string, std::string> &header)
+  {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t,
+                                                CLASS_NAME,
+                                                "loadUrlWithHeader",
+                                                "(ILjava/lang/String;[[Ljava/lang/String;)V")) {
+      jstring jUrl = t.env->NewStringUTF(url.c_str());
+      auto length = header.size();
+      jobjectArray jHeader = t.env->NewObjectArray(length,
+                                                   t.env->FindClass("java/lang/Object"),
+                                                   NULL);
+
+      for (auto itr = header.begin(); itr != header.end(); itr++) {
+        jobjectArray pair = t.env->NewObjectArray(2,
+                                                  t.env->FindClass("java/lang/String"),
+                                                  NULL);
+        t.env->SetObjectArrayElement(pair,
+                                     0,
+                                     t.env->NewStringUTF((itr->first).c_str()));
+        t.env->SetObjectArrayElement(pair,
+                                     1,
+                                     t.env->NewStringUTF((itr->second).c_str()));
+        t.env->SetObjectArrayElement(jHeader,
+                                     std::distance(header.begin(), itr),
+                                     pair);
+      }
+
+      t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jUrl, jHeader);
+      t.env->DeleteLocalRef(jUrl);
+      t.env->DeleteLocalRef(jHeader);
+      t.env->DeleteLocalRef(t.classID);
+    }
+  }
+
 void stopLoadingJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "stopLoading", "(I)V")) {
@@ -262,6 +297,10 @@ void WebViewImpl::loadUrl(const std::string &url) {
 void WebViewImpl::loadFile(const std::string &fileName) {
     auto fullPath = getUrlStringByFileName(fileName);
     loadFileJNI(_viewTag, fullPath);
+}
+
+void WebViewImpl::loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header) {
+  loadUrlWithHeaderJNI(_viewTag, url, header);
 }
 
 void WebViewImpl::stopLoading() {

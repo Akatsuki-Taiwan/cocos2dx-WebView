@@ -90,6 +90,8 @@ public:
     */
     void loadFile(const std::string &fileName);
 
+    void loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header);
+
     /**
     * Stops the current load.
     */
