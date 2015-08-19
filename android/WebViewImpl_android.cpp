@@ -113,7 +113,7 @@ void loadFileJNI(const int index, const std::string &filePath) {
       jstring jUrl = t.env->NewStringUTF(url.c_str());
       auto length = header.size();
       jobjectArray jHeader = t.env->NewObjectArray(length,
-                                                   t.env->FindClass("java/lang/Object"),
+                                                   t.env->FindClass("[Ljava/lang/String;"),
                                                    NULL);
 
       for (auto itr = header.begin(); itr != header.end(); itr++) {
