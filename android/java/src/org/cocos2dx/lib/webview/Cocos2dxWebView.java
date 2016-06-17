@@ -104,7 +104,10 @@ public class Cocos2dxWebView extends WebView {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && !canGoBack()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (canGoBack()) {
+                goBack();
+            }
             return true;
         }
         return super.onKeyDown(keyCode, event);
