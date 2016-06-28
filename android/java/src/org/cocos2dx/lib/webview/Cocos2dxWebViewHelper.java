@@ -336,7 +336,7 @@ public class Cocos2dxWebViewHelper {
             public void run() {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
-                    webView.loadUrl("javascript:" + js);
+                    webView.evaluateJavascript(js, null);
                 }
             }
         });
