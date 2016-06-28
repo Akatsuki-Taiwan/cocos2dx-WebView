@@ -2,6 +2,7 @@ package org.cocos2dx.lib.webview;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -336,7 +337,9 @@ public class Cocos2dxWebViewHelper {
             public void run() {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
-                    webView.evaluateJavascript(js, null);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        webView.evaluateJavascript(js, null);
+                    }
                 }
             }
         });
