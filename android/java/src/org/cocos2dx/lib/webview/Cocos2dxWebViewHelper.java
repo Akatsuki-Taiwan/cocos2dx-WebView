@@ -29,7 +29,9 @@ public class Cocos2dxWebViewHelper {
         Cocos2dxWebViewHelper.handler = new Handler(Looper.myLooper());
 
         Cocos2dxWebViewHelper.cocos2dxActivity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
-        Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
+        if (Cocos2dxWebViewHelper.webViews == null) {
+            Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
+        }
     }
 
     public static Cocos2dxActivity getCocos2dxActivity() { return cocos2dxActivity; }
@@ -56,6 +58,31 @@ public class Cocos2dxWebViewHelper {
 
     public static void _onJsCallback(int index, String message) {
         onJsCallback(index, message);
+    }
+
+    public static void restartWebView(int index) {
+        final int key = index;
+        final Cocos2dxActivity context = (Cocos2dxActivity)Cocos2dxActivity.getContext();
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView oldView = webViews.get(key);
+                Cocos2dxWebView newView =  new Cocos2dxWebView(context, key);
+                FrameLayout.LayoutParams lParams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT);
+                layout.addView(newView, lParams);
+
+                newView.setVisibility(oldView.getVisibility());
+                newView.setOverScrollMode(oldView.getOverScrollMode());
+                newView.setVerticalScrollBarEnabled(oldView.isVerticalScrollBarEnabled());
+                newView.setHorizontalScrollBarEnabled(oldView.isHorizontalScrollBarEnabled());
+                newView.setWebViewRect(oldView.getLeft(), oldView.getTop(), oldView.getWidth(), oldView.getHeight());
+                newView.loadUrl(oldView.getUrl());
+
+                webViews.put(key, newView);
+            }
+        });
     }
 
     @SuppressWarnings("unused")

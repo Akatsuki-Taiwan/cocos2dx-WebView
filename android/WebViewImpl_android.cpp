@@ -8,6 +8,8 @@
 #include "jni/JniHelper.h"
 #include "CCGLView.h"
 #include "base/CCDirector.h"
+#include "base/CCEventType.h"
+#include "base/CCEventListenerCustom.h"
 #include "platform/CCFileUtils.h"
 #include <unordered_map>
 
@@ -27,6 +29,14 @@ int createWebViewJNI() {
 void removeWebViewJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "removeWebView", "(I)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+void restartWebViewJNI(const int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "restartWebView", "(I)V")) {
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
         t.env->DeleteLocalRef(t.classID);
     }
@@ -274,6 +284,13 @@ static std::unordered_map<int, cocos2d::plugin::WebViewImpl*> s_WebViewImpls;
 WebViewImpl::WebViewImpl(WebView *webView) : _viewTag(-1), _webView(webView) {
     _viewTag = createWebViewJNI();
     s_WebViewImpls[_viewTag] = this;
+
+    // Activityに再起動がかかった時はwebviewをリロードする
+    auto listener = cocos2d::EventListenerCustom::create(EVENT_TEXTURE_RELOADED, [this] (EventCustom *) {
+        restartWebViewJNI(_viewTag);
+    });
+
+    webView->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, webView);
 }
 
 WebViewImpl::~WebViewImpl() {
