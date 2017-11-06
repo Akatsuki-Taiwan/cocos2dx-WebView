@@ -9,8 +9,10 @@ import android.view.MotionEvent;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebSettings;
 import android.widget.FrameLayout;
 import android.graphics.Color;
+import android.os.Build;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -39,6 +41,11 @@ public class Cocos2dxWebView extends WebView {
         this.getSettings().setJavaScriptEnabled(true);
 
 		this.setBackgroundColor(Color.TRANSPARENT);
+
+        // httpから始まるURLを許可する
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 
         // `searchBoxJavaBridge_` has big security risk. http://jvn.jp/en/jp/JVN53768697
         try {
