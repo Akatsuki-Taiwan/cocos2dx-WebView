@@ -63,6 +63,8 @@ public:
     void setVerticalScrollIndicator(bool indicator);
     void setHorizontalScrollIndicator(bool indicator);
 
+    void setFocusable(bool isFocusable);
+
     static bool shouldStartLoading(const int viewTag, const std::string &url);
     static void didFinishLoading(const int viewTag, const std::string &url);
     static void didFailLoading(const int viewTag, const std::string &url);
