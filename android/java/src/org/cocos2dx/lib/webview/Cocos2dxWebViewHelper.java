@@ -384,4 +384,18 @@ public class Cocos2dxWebViewHelper {
             }
         });
     }
+
+    @SuppressWarnings("unused")
+    public static void setFocusable(final int index, final boolean isFocusable) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.setFocusable(isFocusable);
+                    webView.setFocusableInTouchMode(isFocusable);
+                }
+            }
+        });
+    }
 }

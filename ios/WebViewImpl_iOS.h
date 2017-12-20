@@ -61,6 +61,8 @@ public:
 
     void setHorizontalScrollIndicator(bool indicator);
 
+    void setFocusable(bool isFocusable);
+
 private:
     UIWebViewWrapper *_uiWebViewWrapper;
     WebView *_webView;

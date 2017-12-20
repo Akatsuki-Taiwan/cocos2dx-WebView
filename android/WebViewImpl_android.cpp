@@ -275,6 +275,14 @@ std::string getUrlStringByFileName(const std::string &fileName) {
     }
     return urlString;
 }
+
+void setWebViewFocusableJNI(const int index, const bool isFocusable) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setFocusable", "(IZ)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, isFocusable);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
 } // namespace
 
 namespace cocos2d {
@@ -431,6 +439,10 @@ void WebViewImpl::setVerticalScrollIndicator(bool indicator) {
 
 void WebViewImpl::setHorizontalScrollIndicator(bool indicator) {
   setWebViewHorizontalScrollIndicatorJNI(_viewTag, indicator);
+}
+
+void WebViewImpl::setFocusable(bool isFocusable) {
+    setWebViewFocusableJNI(_viewTag, isFocusable);
 }
 } // namespace cocos2d
 } // namespace plugin

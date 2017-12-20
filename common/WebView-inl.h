@@ -103,6 +103,10 @@ void WebView::setVerticalScrollIndicator(bool indicator) {
 void WebView::setHorizontalScrollIndicator(bool indicator) {
     _impl->setHorizontalScrollIndicator(indicator);
 }
+
+void WebView::setFocusable(bool isFocusable) {
+    _impl->setFocusable(isFocusable);
+}
 } // namespace cocos2d
 } // namespace plugin
 

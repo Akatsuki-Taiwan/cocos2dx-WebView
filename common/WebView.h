@@ -144,6 +144,8 @@ public:
 
     void setHorizontalScrollIndicator(bool indicator);
 
+    void setFocusable(bool isFocusable);
+
 private:
     cocos2d::plugin::WebViewImpl *_impl;
 };

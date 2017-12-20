@@ -180,4 +180,12 @@
     }
 }
 
+- (void)setFocusable:(bool)isFocusable {
+    if (isFocusable) {
+        [self.uiWebView becomeFirstResponder];
+    } else {
+        [self.uiWebView resignFirstResponder];
+    }
+}
+
 @end

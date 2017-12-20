@@ -53,4 +53,6 @@
 - (void)goForward;
 
 - (void)setScalesPageToFit:(const bool)scalesPageToFit;
+
+- (void)setFocusable:(bool)isFocusable;
 @end
