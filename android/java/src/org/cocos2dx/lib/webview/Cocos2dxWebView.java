@@ -74,9 +74,10 @@ public class Cocos2dxWebView extends WebView {
                 Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
                 return true;
             }
-            // WebView上のURLリンクをタップした時ブラウザを起動させる
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
-            Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
+            // WebView上のURLリンクをタップした時、起動するブラウザを選択させる（複数ブラウザがインストールされてる場合のみ）
+            Intent target = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            Intent chooser = Intent.createChooser(target, null); // 引数をnullにするとタイトルが「アプリで開く」となる。
+            Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(chooser);
             return true;
         }
 
