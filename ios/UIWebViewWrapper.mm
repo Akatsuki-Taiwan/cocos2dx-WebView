@@ -156,8 +156,9 @@
 #pragma mark - UIWebViewDelegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     NSString *url = [[request URL] absoluteString];
-    if ([[[request URL] scheme] isEqualToString:self.jsScheme]) {
-        self.onJsCallback([url UTF8String]);
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        // WebView上のURLリンクをタップした時ブラウザを起動させる
+        [[UIApplication sharedApplication] openURL:request.URL];
         return NO;
     }
     if (self.shouldStartLoading) {

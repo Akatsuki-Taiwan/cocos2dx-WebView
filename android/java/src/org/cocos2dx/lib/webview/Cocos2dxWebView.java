@@ -69,17 +69,16 @@ public class Cocos2dxWebView extends WebView {
     class Cocos2dxWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
-            URI uri = URI.create(urlString);
-            if (uri != null && uri.getScheme().equals(jsScheme)) {
-                Cocos2dxWebViewHelper._onJsCallback(viewTag, urlString);
-                return true;
-            }
             if (urlString.startsWith("mailto:")) {
-            	Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(urlString));
-            	Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(urlString));
+                Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
                 return true;
             }
-            return Cocos2dxWebViewHelper._shouldStartLoading(viewTag, urlString);
+            // WebView上のURLリンクをタップした時、起動するブラウザを選択させる（複数ブラウザがインストールされてる場合のみ）
+            Intent target = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            Intent chooser = Intent.createChooser(target, null);
+            Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(chooser);
+            return true;
         }
 
         @Override
