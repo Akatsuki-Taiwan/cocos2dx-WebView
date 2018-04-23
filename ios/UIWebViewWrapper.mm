@@ -9,6 +9,7 @@
 #import "CCEAGLView.h"
 #import "CCDirector.h"
 
+extern const NSTimeInterval DEFAULT_INTERVAL = 60.0;
 
 @interface UIWebViewWrapper () <UIWebViewDelegate>
 @property(nonatomic, retain) UIWebView *uiWebView;
@@ -99,14 +100,18 @@
 - (void)loadUrl:(const std::string &)urlString {
     if (!self.uiWebView) {[self setupWebView];}
     NSURL *url = [NSURL URLWithString:@(urlString.c_str())];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url
+                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                             timeoutInterval:DEFAULT_INTERVAL];
     [self.uiWebView loadRequest:request];
 }
 
 - (void)loadFile:(const std::string &)filePath {
     if (!self.uiWebView) {[self setupWebView];}
     NSURL *url = [NSURL fileURLWithPath:@(filePath.c_str())];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url
+                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                             timeoutInterval:DEFAULT_INTERVAL];
     [self.uiWebView loadRequest:request];
 }
 
