@@ -8,8 +8,6 @@
 #include <string>
 #include <map>
 
-extern const NSTimeInterval DEFAULT_INTERVAL;
-
 @interface UIWebViewWrapper : NSObject
 @property (nonatomic) std::function<bool(std::string url)> shouldStartLoading;
 @property (nonatomic) std::function<void(std::string url)> didFinishLoading;

@@ -9,7 +9,7 @@
 #import "CCEAGLView.h"
 #import "CCDirector.h"
 
-extern const NSTimeInterval DEFAULT_INTERVAL = 60.0;
+const NSTimeInterval DEFAULT_INTERVAL = 60.0;
 
 @interface UIWebViewWrapper () <UIWebViewDelegate>
 @property(nonatomic, retain) UIWebView *uiWebView;
