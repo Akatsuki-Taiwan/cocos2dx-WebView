@@ -78,6 +78,7 @@ public class Cocos2dxWebViewHelper {
                 newView.setVerticalScrollBarEnabled(oldView.isVerticalScrollBarEnabled());
                 newView.setHorizontalScrollBarEnabled(oldView.isHorizontalScrollBarEnabled());
                 newView.setWebViewRect(oldView.getLeft(), oldView.getTop(), oldView.getWidth(), oldView.getHeight());
+                newView.clearCache(true);
                 newView.loadUrl(oldView.getUrl());
 
                 webViews.put(key, newView);
@@ -228,6 +229,7 @@ public class Cocos2dxWebViewHelper {
             public void run() {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
+                    webView.clearCache(true);
                     webView.loadUrl(url);
                 }
             }
@@ -241,6 +243,7 @@ public class Cocos2dxWebViewHelper {
             public void run() {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
+                    webView.clearCache(true);
                     webView.loadUrl(filePath);
                 }
             }
@@ -258,6 +261,7 @@ public class Cocos2dxWebViewHelper {
                         for (String[] header: headers) {
                             extraHeader.put(header[0], header[1]);
                         }
+                        webView.clearCache(true);
                         webView.loadUrl(url, extraHeader);
                     }
                 }
