@@ -10,7 +10,7 @@
 #include "WebView.h"
 #include "CCDirector.h"
 #include "CCGLView.h"
-#include "CCEAGLView.h"
+#include "CCEAGLView-ios.h"
 #include "platform/CCFileUtils.h"
 
 namespace cocos2d {
