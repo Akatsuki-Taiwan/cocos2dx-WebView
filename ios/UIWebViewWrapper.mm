@@ -6,7 +6,7 @@
 #import "UIWebViewWrapper.h"
 #import "WebView.h"
 #import "CCGLView.h"
-#import "CCEAGLView.h"
+#import "CCEAGLView-ios.h"
 #import "CCDirector.h"
 
 const NSTimeInterval DEFAULT_INTERVAL = 60.0;
