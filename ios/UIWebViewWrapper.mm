@@ -164,7 +164,7 @@ const NSTimeInterval DEFAULT_INTERVAL = 60.0;
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         NSRange linkMatch  = [checkURL rangeOfString:@"twitter"];
 
-        if (linkMatch.location != NSNotFound) {
+        if (linkMatch.location == NSNotFound) {
             [[UIApplication sharedApplication] openURL:request.URL];
             return NO;
         }
