@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.KeyEvent;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
@@ -40,7 +41,7 @@ public class Cocos2dxWebView extends WebView {
 
         this.getSettings().setJavaScriptEnabled(true);
 
-		this.setBackgroundColor(Color.TRANSPARENT);
+        this.setBackgroundColor(Color.TRANSPARENT);
 
         // httpから始まるURLを許可する
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -68,17 +69,8 @@ public class Cocos2dxWebView extends WebView {
 
     class Cocos2dxWebViewClient extends WebViewClient {
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
-            if (urlString.startsWith("mailto:")) {
-                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(urlString));
-                Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
-                return true;
-            }
-            // WebView上のURLリンクをタップした時、起動するブラウザを選択させる（複数ブラウザがインストールされてる場合のみ）
-            Intent target = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
-            Intent chooser = Intent.createChooser(target, null);
-            Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(chooser);
-            return true;
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            return false;
         }
 
         @Override
