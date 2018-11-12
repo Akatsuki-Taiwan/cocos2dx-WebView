@@ -70,7 +70,7 @@ public class Cocos2dxWebView extends WebView {
     class Cocos2dxWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            String urlString = request.getUrl();
+            String urlString = request.getUrl().toString();
             // アクセス先がtwitterである限りは外部ブラウザを起動しない
             if (-1 != urlString.indexOf("twitter")) {
                 return false;
