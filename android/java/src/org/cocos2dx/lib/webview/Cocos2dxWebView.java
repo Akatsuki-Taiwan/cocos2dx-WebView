@@ -70,7 +70,21 @@ public class Cocos2dxWebView extends WebView {
     class Cocos2dxWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            return false;
+            String urlString = request.getUrl();
+            // アクセス先がtwitterである限りは外部ブラウザを起動しない
+            if (-1 != urlString.indexOf("twitter")) {
+                return false;
+            }
+            if (urlString.startsWith("mailto:")) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(urlString));
+                Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
+                return true;
+            }
+            // WebView上のURLリンクをタップした時、起動するブラウザを選択させる（複数ブラウザがインストールされてる場合のみ）
+            Intent target = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            Intent chooser = Intent.createChooser(target, null);
+            Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(chooser);
+            return true;
         }
 
         @Override
