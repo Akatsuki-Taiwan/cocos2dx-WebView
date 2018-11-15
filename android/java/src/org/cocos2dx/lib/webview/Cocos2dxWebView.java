@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.KeyEvent;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
@@ -40,7 +41,7 @@ public class Cocos2dxWebView extends WebView {
 
         this.getSettings().setJavaScriptEnabled(true);
 
-		this.setBackgroundColor(Color.TRANSPARENT);
+        this.setBackgroundColor(Color.TRANSPARENT);
 
         // httpから始まるURLを許可する
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -68,7 +69,12 @@ public class Cocos2dxWebView extends WebView {
 
     class Cocos2dxWebViewClient extends WebViewClient {
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            String urlString = request.getUrl().toString();
+            // アクセス先がtwitterである限りは外部ブラウザを起動しない
+            if (-1 != urlString.indexOf("twitter")) {
+                return false;
+            }
             if (urlString.startsWith("mailto:")) {
                 Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(urlString));
                 Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);

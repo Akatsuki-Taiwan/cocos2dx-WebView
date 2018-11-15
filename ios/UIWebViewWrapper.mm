@@ -160,14 +160,17 @@ const NSTimeInterval DEFAULT_INTERVAL = 60.0;
 
 #pragma mark - UIWebViewDelegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    NSString *url = [[request URL] absoluteString];
+    NSString *checkURL = [request.URL absoluteString];
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        // WebView上のURLリンクをタップした時ブラウザを起動させる
-        [[UIApplication sharedApplication] openURL:request.URL];
-        return NO;
+        NSRange linkMatch  = [checkURL rangeOfString:@"twitter"];
+
+        if (linkMatch.location == NSNotFound) {
+            [[UIApplication sharedApplication] openURL:request.URL];
+            return NO;
+        }
     }
     if (self.shouldStartLoading) {
-        return self.shouldStartLoading([url UTF8String]);
+        return self.shouldStartLoading([checkURL UTF8String]);
     }
     return YES;
 }
