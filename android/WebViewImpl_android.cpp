@@ -8,6 +8,7 @@
 #include "jni/JniHelper.h"
 #include "CCGLView.h"
 #include "base/CCDirector.h"
+#include "base/CCEventDispatcher.h"
 #include "base/CCEventType.h"
 #include "base/CCEventListenerCustom.h"
 #include "platform/CCFileUtils.h"
