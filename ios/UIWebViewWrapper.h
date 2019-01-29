@@ -2,7 +2,7 @@
 // Created by gin0606 on 2014/07/29.
 //
 
-
+#import <CoreFoundation/CoreFoundation.h>
 #include <iosfwd>
 #include <functional>
 #include <string>
