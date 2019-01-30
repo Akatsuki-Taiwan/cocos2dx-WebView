@@ -11,12 +11,12 @@
 
 const NSTimeInterval DEFAULT_INTERVAL = 60.0;
 
-@interface UIWebViewWrapper () <UIWebViewDelegate>
+@interface PluginUIWebViewWrapper () <UIWebViewDelegate>
 @property(nonatomic, retain) UIWebView *uiWebView;
 @property(nonatomic, copy) NSString *jsScheme;
 @end
 
-@implementation UIWebViewWrapper {
+@implementation PluginUIWebViewWrapper {
 
 }
 

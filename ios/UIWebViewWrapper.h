@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 
-@interface UIWebViewWrapper : NSObject
+@interface PluginUIWebViewWrapper : NSObject
 @property (nonatomic) std::function<bool(std::string url)> shouldStartLoading;
 @property (nonatomic) std::function<void(std::string url)> didFinishLoading;
 @property (nonatomic) std::function<void(std::string url)> didFailLoading;

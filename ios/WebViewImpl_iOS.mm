@@ -17,7 +17,7 @@ namespace cocos2d {
 namespace plugin {
 
 WebViewImpl::WebViewImpl(WebView *webView)
-        : _uiWebViewWrapper([UIWebViewWrapper webViewWrapper]), _webView(webView) {
+        : _uiWebViewWrapper([PluginUIWebViewWrapper webViewWrapper]), _webView(webView) {
     [_uiWebViewWrapper retain];
     _uiWebViewWrapper.shouldStartLoading = [this](std::string url) {
         if (this->_webView->shouldStartLoading) {
