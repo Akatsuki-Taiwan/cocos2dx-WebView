@@ -2,12 +2,14 @@ package org.cocos2dx.lib.webview;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -27,8 +29,12 @@ public class Cocos2dxWebViewHelper {
         Cocos2dxWebViewHelper.handler = new Handler(Looper.myLooper());
 
         Cocos2dxWebViewHelper.cocos2dxActivity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
-        Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
+        if (Cocos2dxWebViewHelper.webViews == null) {
+            Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
+        }
     }
+
+    public static Cocos2dxActivity getCocos2dxActivity() { return cocos2dxActivity; }
 
     private static native boolean shouldStartLoading(int index, String message);
 
@@ -52,6 +58,32 @@ public class Cocos2dxWebViewHelper {
 
     public static void _onJsCallback(int index, String message) {
         onJsCallback(index, message);
+    }
+
+    public static void restartWebView(int index) {
+        final int key = index;
+        final Cocos2dxActivity context = (Cocos2dxActivity)Cocos2dxActivity.getContext();
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView oldView = webViews.get(key);
+                Cocos2dxWebView newView =  new Cocos2dxWebView(context, key);
+                FrameLayout.LayoutParams lParams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT);
+                layout.addView(newView, lParams);
+
+                newView.setVisibility(oldView.getVisibility());
+                newView.setOverScrollMode(oldView.getOverScrollMode());
+                newView.setVerticalScrollBarEnabled(oldView.isVerticalScrollBarEnabled());
+                newView.setHorizontalScrollBarEnabled(oldView.isHorizontalScrollBarEnabled());
+                newView.setWebViewRect(oldView.getLeft(), oldView.getTop(), oldView.getWidth(), oldView.getHeight());
+                newView.clearCache(true);
+                newView.loadUrl(oldView.getUrl());
+
+                webViews.put(key, newView);
+            }
+        });
     }
 
     @SuppressWarnings("unused")
@@ -197,6 +229,7 @@ public class Cocos2dxWebViewHelper {
             public void run() {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
+                    webView.clearCache(true);
                     webView.loadUrl(url);
                 }
             }
@@ -210,10 +243,29 @@ public class Cocos2dxWebViewHelper {
             public void run() {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
+                    webView.clearCache(true);
                     webView.loadUrl(filePath);
                 }
             }
         });
+    }
+
+    @SuppressWarnings("unused")
+    public static void loadUrlWithHeader(final int index, final String url, final String[][] headers) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Cocos2dxWebView webView = webViews.get(index);
+                    if (webView != null) {
+                        HashMap<String,String> extraHeader = new HashMap<>();
+                        for (String[] header: headers) {
+                            extraHeader.put(header[0], header[1]);
+                        }
+                        webView.clearCache(true);
+                        webView.loadUrl(url, extraHeader);
+                    }
+                }
+            });
     }
 
     public static void stopLoading(final int index) {
@@ -316,7 +368,9 @@ public class Cocos2dxWebViewHelper {
             public void run() {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
-                    webView.loadUrl("javascript:" + js);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        webView.evaluateJavascript(js, null);
+                    }
                 }
             }
         });
@@ -330,6 +384,20 @@ public class Cocos2dxWebViewHelper {
                 Cocos2dxWebView webView = webViews.get(index);
                 if (webView != null) {
                     webView.setScalesPageToFit(scalesPageToFit);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void setFocusable(final int index, final boolean isFocusable) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.setFocusable(isFocusable);
+                    webView.setFocusableInTouchMode(isFocusable);
                 }
             }
         });

@@ -6,6 +6,7 @@
 #define __cocos2d_plugin_WebViewImpl_android_H_
 
 #include <iosfwd>
+#include <map>
 
 namespace cocos2d {
 class Data;
@@ -36,6 +37,8 @@ public:
 
     void loadFile(const std::string &fileName);
 
+    void loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header);
+
     void stopLoading();
 
     void reload();
@@ -59,6 +62,8 @@ public:
     void setBounce(bool bounce);
     void setVerticalScrollIndicator(bool indicator);
     void setHorizontalScrollIndicator(bool indicator);
+
+    void setFocusable(bool isFocusable);
 
     static bool shouldStartLoading(const int viewTag, const std::string &url);
     static void didFinishLoading(const int viewTag, const std::string &url);

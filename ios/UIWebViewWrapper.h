@@ -6,7 +6,7 @@
 #include <iosfwd>
 #include <functional>
 #include <string>
-
+#include <map>
 
 @interface UIWebViewWrapper : NSObject
 @property (nonatomic) std::function<bool(std::string url)> shouldStartLoading;
@@ -39,6 +39,8 @@
 
 - (void)loadFile:(const std::string &)filePath;
 
+- (void)loadUrlWithHeader:(const std::string &)urlString header:(const std::map<std::string, std::string> &)header;
+
 - (void)stopLoading;
 
 - (void)reload;
@@ -50,4 +52,6 @@
 - (void)goForward;
 
 - (void)setScalesPageToFit:(const bool)scalesPageToFit;
+
+- (void)setFocusable:(bool)isFocusable;
 @end

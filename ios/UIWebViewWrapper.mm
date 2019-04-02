@@ -9,6 +9,7 @@
 #import "CCEAGLView.h"
 #import "CCDirector.h"
 
+const NSTimeInterval DEFAULT_INTERVAL = 60.0;
 
 @interface UIWebViewWrapper () <UIWebViewDelegate>
 @property(nonatomic, retain) UIWebView *uiWebView;
@@ -99,15 +100,29 @@
 - (void)loadUrl:(const std::string &)urlString {
     if (!self.uiWebView) {[self setupWebView];}
     NSURL *url = [NSURL URLWithString:@(urlString.c_str())];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url
+                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                             timeoutInterval:DEFAULT_INTERVAL];
     [self.uiWebView loadRequest:request];
 }
 
 - (void)loadFile:(const std::string &)filePath {
     if (!self.uiWebView) {[self setupWebView];}
     NSURL *url = [NSURL fileURLWithPath:@(filePath.c_str())];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url
+                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                             timeoutInterval:DEFAULT_INTERVAL];
     [self.uiWebView loadRequest:request];
+}
+
+- (void)loadUrlWithHeader:(const std::string &)urlString header:(const std::map<std::string, std::string> &)header {
+  if (!self.uiWebView) { [self setupWebView]; }
+  NSURL *url = [NSURL URLWithString:@(urlString.c_str())];
+  NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
+  for (auto itr = header.begin(); itr != header.end(); itr++) {
+    [mutableRequest setValue:@((itr->second).c_str()) forHTTPHeaderField:@((itr->first).c_str())];
+  }
+  [self.uiWebView loadRequest:mutableRequest];
 }
 
 - (void)stopLoading {
@@ -145,13 +160,17 @@
 
 #pragma mark - UIWebViewDelegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    NSString *url = [[request URL] absoluteString];
-    if ([[[request URL] scheme] isEqualToString:self.jsScheme]) {
-        self.onJsCallback([url UTF8String]);
-        return NO;
+    NSString *checkURL = [request.URL absoluteString];
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        NSRange linkMatch  = [checkURL rangeOfString:@"twitter"];
+
+        if (linkMatch.location == NSNotFound) {
+            [[UIApplication sharedApplication] openURL:request.URL];
+            return NO;
+        }
     }
     if (self.shouldStartLoading) {
-        return self.shouldStartLoading([url UTF8String]);
+        return self.shouldStartLoading([checkURL UTF8String]);
     }
     return YES;
 }
@@ -167,6 +186,14 @@
     if (self.didFailLoading) {
         NSString *url = error.userInfo[NSURLErrorFailingURLStringErrorKey];
         self.didFailLoading([url UTF8String]);
+    }
+}
+
+- (void)setFocusable:(bool)isFocusable {
+    if (isFocusable) {
+        [self.uiWebView becomeFirstResponder];
+    } else {
+        [self.uiWebView resignFirstResponder];
     }
 }
 
