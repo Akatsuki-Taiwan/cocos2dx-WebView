@@ -90,6 +90,8 @@ public:
     */
     void loadFile(const std::string &fileName);
 
+    void loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header);
+
     /**
     * Stops the current load.
     */
@@ -141,6 +143,8 @@ public:
     void setVerticalScrollIndicator(bool indicator);
 
     void setHorizontalScrollIndicator(bool indicator);
+
+    void setFocusable(bool isFocusable);
 
 private:
     cocos2d::plugin::WebViewImpl *_impl;

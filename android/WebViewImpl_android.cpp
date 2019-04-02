@@ -8,6 +8,8 @@
 #include "jni/JniHelper.h"
 #include "CCGLView.h"
 #include "base/CCDirector.h"
+#include "base/CCEventType.h"
+#include "base/CCEventListenerCustom.h"
 #include "platform/CCFileUtils.h"
 #include <unordered_map>
 
@@ -27,6 +29,14 @@ int createWebViewJNI() {
 void removeWebViewJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "removeWebView", "(I)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+void restartWebViewJNI(const int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "restartWebView", "(I)V")) {
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
         t.env->DeleteLocalRef(t.classID);
     }
@@ -102,6 +112,41 @@ void loadFileJNI(const int index, const std::string &filePath) {
         t.env->DeleteLocalRef(t.classID);
     }
 }
+
+  void loadUrlWithHeaderJNI(const int index, const std::string &url, const std::map<std::string, std::string> &header)
+  {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t,
+                                                CLASS_NAME,
+                                                "loadUrlWithHeader",
+                                                "(ILjava/lang/String;[[Ljava/lang/String;)V")) {
+      jstring jUrl = t.env->NewStringUTF(url.c_str());
+      auto length = header.size();
+      jobjectArray jHeader = t.env->NewObjectArray(length,
+                                                   t.env->FindClass("[Ljava/lang/String;"),
+                                                   NULL);
+
+      for (auto itr = header.begin(); itr != header.end(); itr++) {
+        jobjectArray pair = t.env->NewObjectArray(2,
+                                                  t.env->FindClass("java/lang/String"),
+                                                  NULL);
+        t.env->SetObjectArrayElement(pair,
+                                     0,
+                                     t.env->NewStringUTF((itr->first).c_str()));
+        t.env->SetObjectArrayElement(pair,
+                                     1,
+                                     t.env->NewStringUTF((itr->second).c_str()));
+        t.env->SetObjectArrayElement(jHeader,
+                                     std::distance(header.begin(), itr),
+                                     pair);
+      }
+
+      t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jUrl, jHeader);
+      t.env->DeleteLocalRef(jUrl);
+      t.env->DeleteLocalRef(jHeader);
+      t.env->DeleteLocalRef(t.classID);
+    }
+  }
 
 void stopLoadingJNI(const int index) {
     cocos2d::JniMethodInfo t;
@@ -230,6 +275,14 @@ std::string getUrlStringByFileName(const std::string &fileName) {
     }
     return urlString;
 }
+
+void setWebViewFocusableJNI(const int index, const bool isFocusable) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setFocusable", "(IZ)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, isFocusable);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
 } // namespace
 
 namespace cocos2d {
@@ -239,6 +292,13 @@ static std::unordered_map<int, cocos2d::plugin::WebViewImpl*> s_WebViewImpls;
 WebViewImpl::WebViewImpl(WebView *webView) : _viewTag(-1), _webView(webView) {
     _viewTag = createWebViewJNI();
     s_WebViewImpls[_viewTag] = this;
+
+    // Activityに再起動がかかった時はwebviewをリロードする
+    auto listener = cocos2d::EventListenerCustom::create(EVENT_TEXTURE_RELOADED, [this] (EventCustom *) {
+        restartWebViewJNI(_viewTag);
+    });
+
+    webView->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, webView);
 }
 
 WebViewImpl::~WebViewImpl() {
@@ -262,6 +322,10 @@ void WebViewImpl::loadUrl(const std::string &url) {
 void WebViewImpl::loadFile(const std::string &fileName) {
     auto fullPath = getUrlStringByFileName(fileName);
     loadFileJNI(_viewTag, fullPath);
+}
+
+void WebViewImpl::loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header) {
+  loadUrlWithHeaderJNI(_viewTag, url, header);
 }
 
 void WebViewImpl::stopLoading() {
@@ -375,6 +439,10 @@ void WebViewImpl::setVerticalScrollIndicator(bool indicator) {
 
 void WebViewImpl::setHorizontalScrollIndicator(bool indicator) {
   setWebViewHorizontalScrollIndicatorJNI(_viewTag, indicator);
+}
+
+void WebViewImpl::setFocusable(bool isFocusable) {
+    setWebViewFocusableJNI(_viewTag, isFocusable);
 }
 } // namespace cocos2d
 } // namespace plugin

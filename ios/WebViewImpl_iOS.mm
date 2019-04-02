@@ -69,6 +69,10 @@ void WebViewImpl::loadFile(const std::string &fileName) {
     [_uiWebViewWrapper loadFile:fullPath];
 }
 
+ void WebViewImpl::loadUrlWithHeader(const std::string &url, const std::map<std::string, std::string> &header) {
+   [_uiWebViewWrapper loadUrlWithHeader:url header:header];
+ }
+
 void WebViewImpl::stopLoading() {
     [_uiWebViewWrapper stopLoading];
 }
@@ -128,17 +132,21 @@ void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transfo
 void WebViewImpl::setVisible(bool visible) {
     [_uiWebViewWrapper setVisible:visible];
 }
-    
+
 void WebViewImpl::setBounce(bool bounce) {
     [_uiWebViewWrapper setBounce:bounce];
 }
-    
+
 void WebViewImpl::setVerticalScrollIndicator(bool indicator) {
     [_uiWebViewWrapper setVarticalScrollIndicator:indicator];
 }
-    
+
 void WebViewImpl::setHorizontalScrollIndicator(bool indicator) {
     [_uiWebViewWrapper setHorizontalScrollIndicator:indicator];
+}
+
+void WebViewImpl::setFocusable(bool isFocusable) {
+    [_uiWebViewWrapper setFocusable:isFocusable];
 }
 } // namespace cocos2d
 } // namespace plugin

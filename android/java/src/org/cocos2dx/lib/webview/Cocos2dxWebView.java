@@ -2,10 +2,18 @@ package org.cocos2dx.lib.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.KeyEvent;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebSettings;
 import android.widget.FrameLayout;
+import android.graphics.Color;
+import android.os.Build;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -33,6 +41,13 @@ public class Cocos2dxWebView extends WebView {
 
         this.getSettings().setJavaScriptEnabled(true);
 
+        this.setBackgroundColor(Color.TRANSPARENT);
+
+        // httpから始まるURLを許可する
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+
         // `searchBoxJavaBridge_` has big security risk. http://jvn.jp/en/jp/JVN53768697
         try {
             Method method = this.getClass().getMethod("removeJavascriptInterface", new Class[]{String.class});
@@ -54,13 +69,22 @@ public class Cocos2dxWebView extends WebView {
 
     class Cocos2dxWebViewClient extends WebViewClient {
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
-            URI uri = URI.create(urlString);
-            if (uri != null && uri.getScheme().equals(jsScheme)) {
-                Cocos2dxWebViewHelper._onJsCallback(viewTag, urlString);
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            String urlString = request.getUrl().toString();
+            // アクセス先がtwitterである限りは外部ブラウザを起動しない
+            if (-1 != urlString.indexOf("twitter")) {
+                return false;
+            }
+            if (urlString.startsWith("mailto:")) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(urlString));
+                Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(intent);
                 return true;
             }
-            return Cocos2dxWebViewHelper._shouldStartLoading(viewTag, urlString);
+            // WebView上のURLリンクをタップした時、起動するブラウザを選択させる（複数ブラウザがインストールされてる場合のみ）
+            Intent target = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            Intent chooser = Intent.createChooser(target, null);
+            Cocos2dxWebViewHelper.getCocos2dxActivity().startActivity(chooser);
+            return true;
         }
 
         @Override
@@ -88,5 +112,16 @@ public class Cocos2dxWebView extends WebView {
         layoutParams.width = width;
         layoutParams.height = height;
         this.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (canGoBack()) {
+                goBack();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
