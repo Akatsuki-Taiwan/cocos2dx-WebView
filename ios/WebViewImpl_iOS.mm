@@ -10,14 +10,14 @@
 #include "WebView.h"
 #include "CCDirector.h"
 #include "CCGLView.h"
-#include "CCEAGLView.h"
+#include "CCEAGLView-ios.h"
 #include "platform/CCFileUtils.h"
 
 namespace cocos2d {
 namespace plugin {
 
 WebViewImpl::WebViewImpl(WebView *webView)
-        : _uiWebViewWrapper([UIWebViewWrapper webViewWrapper]), _webView(webView) {
+        : _uiWebViewWrapper([PluginUIWebViewWrapper webViewWrapper]), _webView(webView) {
     [_uiWebViewWrapper retain];
     _uiWebViewWrapper.shouldStartLoading = [this](std::string url) {
         if (this->_webView->shouldStartLoading) {

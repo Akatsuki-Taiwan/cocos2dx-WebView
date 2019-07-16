@@ -11,7 +11,7 @@ LOCAL_SRC_FILES := \
 	jni/org_cocos2dx_lib_webview_Cocos2dxWebViewHelper.cpp
 
 
-LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static
+LOCAL_WHOLE_STATIC_LIBRARIES := cc_core
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)/../common

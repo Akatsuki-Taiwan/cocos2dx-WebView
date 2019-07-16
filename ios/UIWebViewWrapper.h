@@ -2,13 +2,13 @@
 // Created by gin0606 on 2014/07/29.
 //
 
-
+#import <CoreFoundation/CoreFoundation.h>
 #include <iosfwd>
 #include <functional>
 #include <string>
 #include <map>
 
-@interface UIWebViewWrapper : NSObject
+@interface PluginUIWebViewWrapper : NSObject
 @property (nonatomic) std::function<bool(std::string url)> shouldStartLoading;
 @property (nonatomic) std::function<void(std::string url)> didFinishLoading;
 @property (nonatomic) std::function<void(std::string url)> didFailLoading;

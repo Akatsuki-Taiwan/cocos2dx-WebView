@@ -8,7 +8,7 @@
 #include <iosfwd>
 #include <map>
 
-@class UIWebViewWrapper;
+@class PluginUIWebViewWrapper;
 
 namespace cocos2d {
 class Data;
@@ -64,7 +64,7 @@ public:
     void setFocusable(bool isFocusable);
 
 private:
-    UIWebViewWrapper *_uiWebViewWrapper;
+    PluginUIWebViewWrapper *_uiWebViewWrapper;
     WebView *_webView;
 };
 
